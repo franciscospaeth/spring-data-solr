@@ -60,7 +60,7 @@ import org.springframework.data.solr.core.query.TermsQuery;
 import org.springframework.data.solr.core.query.result.Cursor;
 import org.springframework.data.solr.core.query.result.DelegatingCursor;
 import org.springframework.data.solr.core.query.result.FacetPage;
-import org.springframework.data.solr.core.query.result.GroupPage;
+import org.springframework.data.solr.core.query.result.GroupResultPage;
 import org.springframework.data.solr.core.query.result.GroupResult;
 import org.springframework.data.solr.core.query.result.HighlightPage;
 import org.springframework.data.solr.core.query.result.ScoredPage;
@@ -315,7 +315,7 @@ public class SolrTemplate implements SolrOperations, InitializingBean, Applicati
 	}
 
 	@Override
-	public <T> GroupPage<T> queryForGroupPage(GroupQuery query, Class<T> clazz) {
+	public <T> GroupResultPage<T> queryForGroupPage(GroupQuery query, Class<T> clazz) {
 		Assert.notNull(query, "Query must not be 'null'.");
 		Assert.notNull(clazz, "Target class must not be 'null'.");
 
@@ -323,10 +323,10 @@ public class SolrTemplate implements SolrOperations, InitializingBean, Applicati
 		
 		QueryResponse response = query(namedObjectsGroupQuery);
 
-		List<GroupResult<T>> content = ResultHelper.convertGroupQueryResponseToGroupResultList(namedObjectsGroupQuery, response, this,
-				clazz);
+		List<GroupResult<T>> content = ResultHelper.convertGroupQueryResponseToGroupResultList(namedObjectsGroupQuery, 
+				response, this, clazz);
 
-		return new GroupPage<T>(content, namedObjectsGroupQuery.getNamesAssociation());
+		return new GroupResultPage<T>(content, namedObjectsGroupQuery.getNamesAssociation());
 	}
 
 	@Override

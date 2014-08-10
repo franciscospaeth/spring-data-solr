@@ -120,6 +120,8 @@ public class DefaultQueryParser extends QueryParserBase<SolrDataQuery> {
 
 	private void processGroupOptions(SolrQuery solrQuery, GroupQuery query) {
 		solrQuery.set(GroupParams.GROUP, true);
+		solrQuery.set(GroupParams.GROUP_MAIN, false);
+		solrQuery.set(GroupParams.GROUP_FORMAT, "grouped");
 
 		if (!CollectionUtils.isEmpty(query.getGroupByFunctions())) {
 			for (Function f : query.getGroupByFunctions()) {
@@ -143,6 +145,10 @@ public class DefaultQueryParser extends QueryParserBase<SolrDataQuery> {
 				Order o = iterator.next();
 				solrQuery.add(GroupParams.GROUP_SORT, o.getProperty().trim() + " " + (o.isAscending() ? ORDER.asc : ORDER.desc));
 			}
+		}
+		
+		if (query.getCachePercent() > 0) {
+			solrQuery.add(GroupParams.GROUP_CACHE_PERCENTAGE, String.valueOf(query.getCachePercent()));
 		}
 		
 		if (query.getGroupRows() != null && query.getGroupRows() >= 0) {

@@ -31,7 +31,7 @@ import org.springframework.data.solr.core.query.SolrDataQuery;
 import org.springframework.data.solr.core.query.TermsQuery;
 import org.springframework.data.solr.core.query.result.Cursor;
 import org.springframework.data.solr.core.query.result.FacetPage;
-import org.springframework.data.solr.core.query.result.GroupPage;
+import org.springframework.data.solr.core.query.result.GroupResultPage;
 import org.springframework.data.solr.core.query.result.HighlightPage;
 import org.springframework.data.solr.core.query.result.ScoredPage;
 import org.springframework.data.solr.core.query.result.TermsPage;
@@ -187,13 +187,13 @@ public interface SolrOperations {
 	<T> FacetPage<T> queryForFacetPage(FacetQuery query, Class<T> clazz);
 
 	/**
-	 * Execute a group query against solr. A {@link GroupPage} will be returned containing requested grouping. 
+	 * Execute a group query against solr. A {@link GroupResultPage} will be returned containing requested grouping. 
 	 * 
 	 * @param query
 	 * @param clazz
 	 * @return
 	 */
-	<T> GroupPage<T> queryForGroupPage(GroupQuery query, Class<T> clazz);
+	<T> GroupResultPage<T> queryForGroupPage(GroupQuery query, Class<T> clazz);
 
 	/**
 	 * Execute a query and highlight matches in result

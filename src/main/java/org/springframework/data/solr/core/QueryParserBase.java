@@ -737,6 +737,11 @@ public abstract class QueryParserBase<QUERYTPYE extends SolrDataQuery> implement
 
 	}
 
+	/**
+	 * Internal decoration to handle group names for {@link GroupQuery}.
+	 * 
+	 * @author Francisco Spaeth
+	 */
 	static class NamedObjectsGroupQuery extends AbstractGroupQueryDecorator {
 
 		private Map<Object, String> namesAssociation = new HashMap<Object, String>();

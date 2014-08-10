@@ -35,6 +35,7 @@ import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.TermsResponse;
 import org.apache.solr.client.solrj.response.TermsResponse.Term;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.annotation.Id;
@@ -49,6 +50,7 @@ import org.springframework.data.solr.core.query.Field;
 import org.springframework.data.solr.core.query.GroupQuery;
 import org.springframework.data.solr.core.query.SimpleField;
 import org.springframework.data.solr.core.query.SimplePivotField;
+import org.springframework.data.solr.core.query.SolrPageRequest;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPivotFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetQueryEntry;
@@ -75,7 +77,8 @@ import org.springframework.util.StringUtils;
  */
 final class ResultHelper {
 
-	private ResultHelper() {}
+	private ResultHelper() {
+	}
 
 	static Map<String, List<TermsFieldEntry>> convertTermsQueryResponseToTermsMap(QueryResponse response) {
 		if (response == null || response.getTermsResponse() == null || response.getTermsResponse().getTermMap() == null) {
@@ -123,8 +126,9 @@ final class ResultHelper {
 						facetResult.put(field, new SolrResultPage<FacetFieldEntry>(pageEntries, query.getFacetOptions()
 								.getPageable(), facetField.getValueCount(), null));
 					} else {
-						facetResult.put(field, new SolrResultPage<FacetFieldEntry>(Collections.<FacetFieldEntry> emptyList(), query
-								.getFacetOptions().getPageable(), 0, null));
+						facetResult.put(field,
+								new SolrResultPage<FacetFieldEntry>(Collections.<FacetFieldEntry> emptyList(), query
+										.getFacetOptions().getPageable(), 0, null));
 					}
 				}
 			}
@@ -260,19 +264,26 @@ final class ResultHelper {
 
 			List<GroupEntry<T>> groupEntries = new ArrayList<GroupEntry<T>>();
 			for (Group group : groupCommand.getValues()) {
-				List<T> beans = solrTemplate.convertSolrDocumentListToBeans(group.getResult(), clazz);
-				String groupName = group.getGroupValue();
-				Page<T> page = new PageImpl<T>(beans, null, group.getResult().getNumFound());
-				groupEntries.add(new SimpleGroupEntry<T>(groupName, page));
+				SolrDocumentList documentList = group.getResult();
+				List<T> beans = solrTemplate.convertSolrDocumentListToBeans(documentList, clazz);
+				Page<T> page = new PageImpl<T>(beans, query.getGroupPageRequest(), documentList.getNumFound());
+				groupEntries.add(new SimpleGroupEntry<T>(group.getGroupValue(), page));
 			}
 
 			int matches = groupCommand.getMatches();
 			Integer ngroups = groupCommand.getNGroups();
 			String name = groupCommand.getName();
-			result.add(new SimpleGroupResult<T>(matches, ngroups, name, groupEntries));
+			
+			PageImpl<GroupEntry<T>> page;
+			if (ngroups != null) {
+				page = new PageImpl<GroupEntry<T>>(groupEntries, query.getPageRequest(), ngroups.intValue());
+			} else {
+				page = new PageImpl<GroupEntry<T>>(groupEntries);
+			}
+			
+			result.add(new SimpleGroupResult<T>(matches, ngroups, name, page));
 		}
 
 		return result;
 	}
-
 }

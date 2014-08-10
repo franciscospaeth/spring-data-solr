@@ -4,23 +4,28 @@ import org.springframework.data.domain.Page;
 
 public class SimpleGroupEntry<T> implements GroupEntry<T> {
 
-	private String groupName;
+	private String groupValue;
 	private Page<T> result;
 
-	public SimpleGroupEntry(String groupName, Page<T> result) {
+	public SimpleGroupEntry(String groupValue, Page<T> result) {
 		super();
-		this.groupName = groupName;
+		this.groupValue = groupValue;
 		this.result = result;
 	}
 
 	@Override
-	public String getGroupName() {
-		return groupName;
+	public String getGroupValue() {
+		return groupValue;
 	}
 
 	@Override
 	public Page<T> getResult() {
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "SimpleGroupEntry [groupValue=" + groupValue + ", result=" + result + "]";
 	}
 
 }
