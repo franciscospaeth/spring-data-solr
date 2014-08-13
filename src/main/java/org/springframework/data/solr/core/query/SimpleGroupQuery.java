@@ -17,6 +17,8 @@ public class SimpleGroupQuery extends SimpleFacetQuery implements GroupQuery {
 
 	private Sort sort;
 
+	private boolean truncateFacets = false;	
+	private boolean groupFacets = false;
 	private boolean groupCount = false;
 	private int cachePercent = DEFAULT_CACHE_PERCENT;
 
@@ -126,7 +128,31 @@ public class SimpleGroupQuery extends SimpleFacetQuery implements GroupQuery {
 	public int getCachePercent() {
 		return cachePercent;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends GroupQuery> T setTruncateFacets(boolean truncateFacets) {
+		this.truncateFacets = truncateFacets;
+		return (T) this;
+	}
+	
+	@Override
+	public boolean isTruncateFacets() {
+		return truncateFacets;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends GroupQuery> T setGroupFacets(boolean groupFacets) {
+		this.groupFacets = groupFacets;
+		return (T) this;
+	}
+	
+	@Override
+	public boolean isGroupFacets() {
+		return groupFacets;
+	}
+	
 	@Override
 	@Deprecated
 	public Pageable getGroupPageRequest() {

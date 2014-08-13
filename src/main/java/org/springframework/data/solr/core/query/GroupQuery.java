@@ -112,6 +112,32 @@ public interface GroupQuery extends FacetQuery {
 	int getCachePercent();
 
 	/**
+	 * Defines if the facet counts should be grouped by the first field group defined for this query.
+	 * 
+	 * @param groupFacets
+	 * @return
+	 */
+	<T extends GroupQuery> T setGroupFacets(boolean groupFacets);
+	
+	/**
+	 * @return facet counts should be grouped by the first field group defined for this query
+	 */
+	boolean isGroupFacets();
+	
+	/**
+	 * Defines if facet counts should be based on the most relevant document of each group matching the query.
+	 * 
+	 * @param truncateFacets
+	 * @return
+	 */
+	<T extends GroupQuery> T setTruncateFacets(boolean truncateFacets);
+	
+	/**
+	 * @return facet counts should be based on the most relevant document of each group matching the query.
+	 */
+	boolean isTruncateFacets();
+	
+	/**
 	 * Returns a {@link Pageable} object representing group request.
 	 * 
 	 * @return

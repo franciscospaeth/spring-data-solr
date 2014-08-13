@@ -158,6 +158,8 @@ public class DefaultQueryParser extends QueryParserBase<SolrDataQuery> {
 			solrQuery.set(GroupParams.GROUP_OFFSET, query.getGroupOffset());
 		}
 		solrQuery.set(GroupParams.GROUP_TOTAL_COUNT, query.isGroupTotalCount());
+		solrQuery.set(GroupParams.GROUP_FACET, query.isGroupFacets());
+		solrQuery.set(GroupParams.GROUP_TRUNCATE, query.isTruncateFacets());
 		
 	}
 

@@ -11,7 +11,7 @@ import org.springframework.data.solr.core.query.Field;
 import org.springframework.data.solr.core.query.Function;
 import org.springframework.data.solr.core.query.Query;
 
-public class GroupResultPageTest {
+public class SolrGroupResultPageTest {
 
 	@Test
 	public void testGetGroupResultField() {
@@ -23,7 +23,7 @@ public class GroupResultPageTest {
 
 		Map<Object, String> objectsName = Collections.<Object, String> singletonMap(field, "name");
 
-		GroupResultPage<Object> result = new GroupResultPage<Object>(Collections.singletonList(gr), objectsName);
+		SolrGroupResultPage<Object> result = new SolrGroupResultPage<Object>(Collections.singletonList(gr), objectsName);
 
 		Assert.assertEquals(gr, result.getGroupResult(field));
 		Assert.assertEquals(gr, result.getGroupResult("name"));
@@ -38,7 +38,7 @@ public class GroupResultPageTest {
 
 		Map<Object, String> objectsName = Collections.<Object, String> singletonMap(func, "name");
 
-		GroupResultPage<Object> result = new GroupResultPage<Object>(Collections.singletonList(gr), objectsName);
+		SolrGroupResultPage<Object> result = new SolrGroupResultPage<Object>(Collections.singletonList(gr), objectsName);
 
 		Assert.assertEquals(gr, result.getGroupResult(func));
 	}
@@ -52,7 +52,7 @@ public class GroupResultPageTest {
 
 		Map<Object, String> objectsName = Collections.<Object, String> singletonMap(query, "name");
 
-		GroupResultPage<Object> result = new GroupResultPage<Object>(Collections.singletonList(gr), objectsName);
+		SolrGroupResultPage<Object> result = new SolrGroupResultPage<Object>(Collections.singletonList(gr), objectsName);
 
 		Assert.assertEquals(gr, result.getGroupResult(query));
 	}
@@ -62,7 +62,7 @@ public class GroupResultPageTest {
 		@SuppressWarnings("unchecked")
 		GroupResult<Object> gr = new SimpleGroupResult<Object>(1, null, "name", Mockito.mock(Page.class));
 
-		GroupResultPage<Object> result = new GroupResultPage<Object>(Collections.singletonList(gr),
+		SolrGroupResultPage<Object> result = new SolrGroupResultPage<Object>(Collections.singletonList(gr),
 				Collections.<Object, String> emptyMap());
 
 		Assert.assertEquals(gr, result.getGroupResult("name"));
@@ -70,7 +70,7 @@ public class GroupResultPageTest {
 
 	@Test
 	public void testInexistentGroupResult() {
-		GroupResultPage<Object> result = new GroupResultPage<Object>(Collections.<GroupResult<Object>>emptyList(),
+		SolrGroupResultPage<Object> result = new SolrGroupResultPage<Object>(Collections.<GroupResult<Object>>emptyList(),
 				Collections.<Object, String> emptyMap());
 
 		Assert.assertNull(result.getGroupResult("name"));

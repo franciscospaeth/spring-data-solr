@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.solr.core.query.Field;
 import org.springframework.data.solr.core.query.Function;
 import org.springframework.data.solr.core.query.Query;
@@ -17,13 +16,13 @@ import org.springframework.util.Assert;
  *
  * @param <T>
  */
-public class GroupResultPage<T> extends PageImpl<GroupResult<T>> {
+public class SolrGroupResultPage<T> extends SolrResultPage<GroupResult<T>> implements GroupPage<T> {
 
 	private static final long serialVersionUID = 1L;
 	private Map<String, GroupResult<T>> resultMap;
 	private Map<Object, String> objectsName;
 
-	public GroupResultPage(List<GroupResult<T>> content, Map<Object, String> objectsName) {
+	public SolrGroupResultPage(List<GroupResult<T>> content, Map<Object, String> objectsName) {
 		super(content);
 		resultMap = new HashMap<String, GroupResult<T>>();
 		for (GroupResult<T> gr : content) {

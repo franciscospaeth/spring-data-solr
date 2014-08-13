@@ -89,6 +89,26 @@ public abstract class AbstractGroupQueryDecorator extends AbstractFacetQueryDeco
 	public int getCachePercent() {
 		return query.getCachePercent();
 	}
+	
+	@Override
+	public <T extends GroupQuery> T setTruncateFacets(boolean truncateFacets) {
+		return query.setTruncateFacets(truncateFacets);
+	}
+	
+	@Override
+	public boolean isTruncateFacets() {
+		return query.isTruncateFacets();
+	}
+	
+	@Override
+	public <T extends GroupQuery> T setGroupFacets(boolean groupFacets) {
+		return query.setGroupFacets(groupFacets);
+	}
+	
+	@Override
+	public boolean isGroupFacets() {
+		return query.isGroupFacets();
+	}
 
 	@Deprecated
 	@Override

@@ -73,8 +73,8 @@ import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.FacetPivotFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetQueryEntry;
 import org.springframework.data.solr.core.query.result.GroupEntry;
+import org.springframework.data.solr.core.query.result.GroupPage;
 import org.springframework.data.solr.core.query.result.GroupResult;
-import org.springframework.data.solr.core.query.result.GroupResultPage;
 import org.springframework.data.solr.core.query.result.HighlightPage;
 import org.springframework.data.solr.core.query.result.TermsFieldEntry;
 import org.springframework.data.solr.core.query.result.TermsPage;
@@ -836,7 +836,7 @@ public class ITestSolrTemplate extends AbstractITestWithEmbeddedSolrServer {
 		groupQuery.setGroupLimit(2);
 
 		// asserts result page
-		GroupResultPage<ExampleSolrBean> groupResultPage = solrTemplate.queryForGroupPage(groupQuery, ExampleSolrBean.class);
+		GroupPage<ExampleSolrBean> groupResultPage = solrTemplate.queryForGroupPage(groupQuery, ExampleSolrBean.class);
 		GroupResult<ExampleSolrBean> groupResultName = groupResultPage.getGroupResult("name");
 		GroupResult<ExampleSolrBean> groupResultFunction = groupResultPage.getGroupResult(f);
 		GroupResult<ExampleSolrBean> groupResultQuery1 = groupResultPage.getGroupResult(q1);
@@ -872,8 +872,33 @@ public class ITestSolrTemplate extends AbstractITestWithEmbeddedSolrServer {
 		assertFalse(query2GroupEntry.getResult().hasNext());
 	}
 
+	/**
+	 * @see DATASOLR-121
+	 */
+	@Test
 	public void testGroupQueryWithFacets() {
-		Assert.fail("test missing");
+		solrTemplate.saveBean(new ExampleSolrBean("id_1", "name1", "category1", 2, true));
+		solrTemplate.saveBean(new ExampleSolrBean("id_2", "name1", "category1", 2, true));
+		solrTemplate.saveBean(new ExampleSolrBean("id_3", "name1", "category1", 1, true));
+		solrTemplate.saveBean(new ExampleSolrBean("id_4", "name2", "category2", 1, false));
+		solrTemplate.saveBean(new ExampleSolrBean("id_5", "name2", "category2", 2, false));
+		solrTemplate.saveBean(new ExampleSolrBean("id_6", "name2", "category1", 1, true));
+		solrTemplate.commit();
+
+		SimpleGroupQuery groupQuery = new SimpleGroupQuery(new SimpleStringCriteria("*:*"));
+		groupQuery.addGroupByField("name");
+		groupQuery.setFacetOptions(new FacetOptions("inStock"));
+		groupQuery.setGroupFacets(true);
+		GroupPage<ExampleSolrBean> groupResultPage = solrTemplate.queryForGroupPage(groupQuery, ExampleSolrBean.class);
+
+		Page<FacetFieldEntry> facetResultPage = groupResultPage.getFacetResultPage("inStock");
+		
+		List<FacetFieldEntry> facetContent = facetResultPage.getContent();
+		
+		Assert.assertEquals("true",facetContent.get(0).getValue());
+		Assert.assertEquals("false",facetContent.get(1).getValue());
+		Assert.assertEquals(2,facetContent.get(0).getValueCount());
+		Assert.assertEquals(1,facetContent.get(1).getValueCount());
 	}
 	
 	private void assertGroupEntryContentIds(GroupEntry<ExampleSolrBean> groupEntry, String ... ids) {
